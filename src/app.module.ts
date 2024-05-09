@@ -31,6 +31,7 @@ import { Comment } from './comments/entities/comment.entity';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
+import { Seller } from './users/entities/seller.entity';
 
 @Module({
   imports: [
@@ -65,7 +66,9 @@ import { ProductCategoriesModule } from './product-categories/product-categories
         Transaction,
         UserRole,
         Comment,
+        Seller,
       ],
+      // autoLoadEntities: true,
       synchronize: true,
     }),
     ReviewsModule,

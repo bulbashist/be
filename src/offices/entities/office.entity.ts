@@ -3,7 +3,7 @@ import { Order } from '../../orders/entities/order.entity';
 
 @Entity()
 export class Office {
-  @PrimaryColumn()
+  @PrimaryColumn({ generated: 'increment' })
   id: number;
 
   @Column()

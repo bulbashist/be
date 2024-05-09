@@ -35,6 +35,21 @@ export class ProductsService {
       .leftJoinAndSelect('product.photos', 'photos')
       .setParameter('text', text)
       .getMany();
+    return products;
+  }
+
+  async findBySeller(sellerId: number, page = 1, amount = 4) {
+    const products = await this._repo
+      .createQueryBuilder('product')
+      .leftJoin('product.seller', 'seller')
+      .addSelect(['seller.id', 'seller.name'])
+      .where('seller.id = :sellerId', { sellerId })
+      .leftJoinAndSelect('product.manufacturer', 'manufacturer')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.photos', 'photos')
+      .take(amount)
+      .skip((page - 1) * amount)
+      .getMany();
 
     return products;
   }
@@ -43,6 +58,8 @@ export class ProductsService {
     return await this._repo
       .createQueryBuilder('product')
       .where('product.id = :id', { id })
+      .leftJoin('product.seller', 'seller')
+      .addSelect(['seller.id', 'seller.name'])
       .leftJoinAndSelect('product.manufacturer', 'manufacturer')
       .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect('product.photos', 'photos')

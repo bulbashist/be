@@ -10,7 +10,6 @@ import {
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { GoogleOAuthGuard } from './google/google.guard';
-import { GithubOAuthGuard } from './github/github.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,32 +25,18 @@ export class AuthController {
   }
 
   @Get('login-google')
-  // @UseGuards(GoogleOAuthGuard)
+  @UseGuards(GoogleOAuthGuard)
   async loginGoogle() {
     return;
   }
 
-  @Get('login-google-redirect')
-  //  @UseGuards(GoogleOAuthGuard)
+  @Get('google-redirect')
+  @UseGuards(GoogleOAuthGuard)
   async loginGoogleCallback(@Res() res: Response, @Req() req: Request) {
+    console.log(req.user);
     const { email } = req.user as any;
 
     const accessToken = await this.authService.logInGoogle(email);
-    this.authService.authroizeAndRedirect(res, accessToken);
-  }
-
-  @Get('login-github')
-  //  @UseGuards(GithubOAuthGuard)
-  async loginGithub() {
-    return;
-  }
-
-  @Get('login-github-redirect')
-  //@UseGuards(GithubOAuthGuard)
-  async loginGithubCallback(@Res() res: Response, @Req() req: Request) {
-    const { email } = req.user as any;
-
-    const accessToken = await this.authService.logInGithub(email);
     this.authService.authroizeAndRedirect(res, accessToken);
   }
 

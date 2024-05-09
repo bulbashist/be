@@ -11,6 +11,7 @@ import { ProductPhoto } from './product-photo.entity';
 import { ProductManufacturer } from './product-manufacturer.entity';
 import { ProductsToOrders } from 'src/orders/entities/order.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Product {
@@ -45,6 +46,12 @@ export class Product {
     onDelete: 'RESTRICT',
   })
   manufacturer: ProductManufacturer;
+
+  @ManyToOne(() => User, (u) => u.id, {
+    eager: true,
+    onDelete: 'RESTRICT',
+  })
+  seller: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;

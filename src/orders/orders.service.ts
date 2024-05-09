@@ -13,7 +13,9 @@ export class OrdersService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    return await this._repo.save(createOrderDto);
+    const res = await this._repo.save(createOrderDto);
+    console.log(res);
+    return res;
   }
 
   async findAll() {

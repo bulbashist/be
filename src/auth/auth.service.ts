@@ -32,18 +32,10 @@ export class AuthService {
     let user = await this._usersService.findOne(email);
 
     if (!user) {
-      user = await this._usersService.create({ login: email });
-    }
-
-    const accessToken = this.createToken(user);
-    return accessToken;
-  }
-
-  async logInGithub(email: string) {
-    let user = await this._usersService.findOne(email);
-
-    if (!user) {
-      user = await this._usersService.create({ login: email });
+      user = await this._usersService.create({
+        login: email,
+        serviceOnly: true,
+      });
     }
 
     const accessToken = this.createToken(user);
@@ -61,6 +53,14 @@ export class AuthService {
   }
 
   async signUp(login: string, password: string, name?: string) {
+    try {
+      await this._usersService.create({ login, password, name });
+    } catch {
+      throw new BadRequestException('User already exists');
+    }
+  }
+
+  async signUpAsSeller(login: string, password: string, name?: string) {
     try {
       await this._usersService.create({ login, password, name });
     } catch {

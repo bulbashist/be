@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,8 +23,15 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll() {
-    return await this.productsService.findAll();
+  async findAll(
+    @Query('seller') sellerId: string,
+    @Query('page', ParseIntPipe) page: number,
+  ) {
+    if (sellerId) {
+      return this.productsService.findBySeller(+sellerId, page);
+    } else {
+      return await this.productsService.findAll();
+    }
   }
 
   @Get('/search')
