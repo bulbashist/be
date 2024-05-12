@@ -1,5 +1,5 @@
 export type AccessToken = {
   id: number;
-  isAdmin: boolean;
+  rights: number;
   name: string;
 };

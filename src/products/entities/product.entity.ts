@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { ProductCategory } from '../../product-categories/entities/product-category.entity';
 import { ProductPhoto } from './product-photo.entity';
-import { ProductManufacturer } from './product-manufacturer.entity';
+import { ProductManufacturer } from '../../product-manufacturers/entities/product-manufacturer.entity';
 import { ProductsToOrders } from 'src/orders/entities/order.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';

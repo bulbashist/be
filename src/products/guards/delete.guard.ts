@@ -2,23 +2,23 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { AccessToken } from 'src/utility/types';
-import { UpdateReviewDto } from '../dto/update-review.dto';
+import { UpdateProductDto } from '../dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Review } from '../entities/review.entity';
 import { Repository } from 'typeorm';
+import { Product } from '../entities/product.entity';
 
 @Injectable()
 export class DeleteGuard implements CanActivate {
   constructor(
-    @InjectRepository(Review)
-    private _repo: Repository<Review>,
+    @InjectRepository(Product)
+    private _repo: Repository<Product>,
     private _jwtService: JwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context
       .switchToHttp()
-      .getRequest<Request<{ id: string }, never, UpdateReviewDto>>();
+      .getRequest<Request<{ id: string }, never, UpdateProductDto>>();
 
     const reviewId = +req.params.id;
     const token = req.cookies.accessToken;

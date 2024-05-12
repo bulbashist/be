@@ -16,13 +16,12 @@ import { OrderStatus } from './orders/entities/order-status.entity';
 import { Order, ProductsToOrders } from './orders/entities/order.entity';
 import { PayCard } from './paycards/entities/paycard.entity';
 import { ProductCategory } from './product-categories/entities/product-category.entity';
-import { ProductManufacturer } from './products/entities/product-manufacturer.entity';
+import { ProductManufacturer } from './product-manufacturers/entities/product-manufacturer.entity';
 import { ProductPhoto } from './products/entities/product-photo.entity';
 import { Product } from './products/entities/product.entity';
 import { Transaction } from './transactions/entities/transaction.entity';
 import { UserRole } from './users/entities/user-role.entity';
 import { ProductsModule } from './products/products.module';
-import { OrdersModule } from './orders/orders.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { OfficesModule } from './offices/offices.module';
 import { PaycardsModule } from './paycards/paycards.module';
@@ -32,6 +31,8 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ProductCategoriesModule } from './product-categories/product-categories.module';
 import { Seller } from './users/entities/seller.entity';
+import { OrdersModule } from './orders/orders.module';
+import { ProductManufacturersModule } from './product-manufacturers/product-manufacturers.module';
 
 @Module({
   imports: [
@@ -68,7 +69,6 @@ import { Seller } from './users/entities/seller.entity';
         Comment,
         Seller,
       ],
-      // autoLoadEntities: true,
       synchronize: true,
     }),
     ReviewsModule,
@@ -81,6 +81,7 @@ import { Seller } from './users/entities/seller.entity';
     PaycardsModule,
     CommentsModule,
     ProductCategoriesModule,
+    ProductManufacturersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

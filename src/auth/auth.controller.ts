@@ -33,9 +33,7 @@ export class AuthController {
   @Get('google-redirect')
   @UseGuards(GoogleOAuthGuard)
   async loginGoogleCallback(@Res() res: Response, @Req() req: Request) {
-    console.log(req.user);
     const { email } = req.user as any;
-
     const accessToken = await this.authService.logInGoogle(email);
     this.authService.authroizeAndRedirect(res, accessToken);
   }

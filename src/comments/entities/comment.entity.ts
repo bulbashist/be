@@ -16,6 +16,9 @@ export class Comment {
   @Column({ type: 'varchar', length: 1000 })
   text: string;
 
+  @Column()
+  rating: number;
+
   @CreateDateColumn()
   date: Date;
 

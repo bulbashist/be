@@ -64,7 +64,7 @@ export class ReviewsController {
     @Jwt() token: AccessToken,
   ) {
     const { user } = createReviewDto;
-    const userId = token.isAdmin && user ? user.id : token.id;
+    const userId = 1; //token.isAdmin && user ? user.id : token.id;
 
     return await this.reviewsService.create(createReviewDto, userId);
   }

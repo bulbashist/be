@@ -1,4 +1,5 @@
 export enum UserRights {
-  READ = 0b1,
-  WRITE = 0b10,
+  User = 0b1,
+  Seller = 0b10,
+  Admin = 0b100,
 }

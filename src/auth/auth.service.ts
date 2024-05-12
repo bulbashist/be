@@ -34,6 +34,7 @@ export class AuthService {
     if (!user) {
       user = await this._usersService.create({
         login: email,
+        name: email,
         serviceOnly: true,
       });
     }
@@ -54,7 +55,7 @@ export class AuthService {
 
   async signUp(login: string, password: string, name?: string) {
     try {
-      await this._usersService.create({ login, password, name });
+      await this._usersService.create({ login, password, name: name ?? login });
     } catch {
       throw new BadRequestException('User already exists');
     }
@@ -62,7 +63,7 @@ export class AuthService {
 
   async signUpAsSeller(login: string, password: string, name?: string) {
     try {
-      await this._usersService.create({ login, password, name });
+      await this._usersService.create({ login, password, name: name ?? login });
     } catch {
       throw new BadRequestException('User already exists');
     }

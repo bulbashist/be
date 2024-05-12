@@ -29,14 +29,6 @@ export class ProductCategoriesController {
     return this.productCategoriesService.findAll();
   }
 
-  @Get(':name')
-  async findOne(
-    @Param('name') cName: string,
-    @Query('page', ParseIntPipe) page: number,
-  ) {
-    return await this.productCategoriesService.getProducts(cName, page);
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
