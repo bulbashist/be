@@ -38,14 +38,23 @@ export class OrdersGateway implements OnGatewayConnection {
 
   @SubscribeMessage('createOrder')
   create(@MessageBody() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+    this.ordersService
+      .create(createOrderDto)
+      .then((res) => this.server.to('ADV_USERS').emit('createOrder', res));
   }
 
   @SubscribeMessage('findAllOrders')
   findAll(@MessageBody() page = 1, @ConnectedSocket() client: Socket) {
     this.ordersService
-      .findAll()
+      .findAll(page)
       .then((res) => client.emit('findAllOrders', res));
+  }
+
+  @SubscribeMessage('findBySeller')
+  findBySeller(@MessageBody() sellerId = 1, @ConnectedSocket() client: Socket) {
+    this.ordersService
+      .findBySeller(sellerId)
+      .then((res) => client.emit('findBySeller', res));
   }
 
   @SubscribeMessage('findOneOrder')
@@ -55,13 +64,16 @@ export class OrdersGateway implements OnGatewayConnection {
       .then((res) => client.emit('findOneOrder', res));
   }
 
-  async update(@MessageBody() { id, status }: UpdateOrderDto) {
-    const payload = await this.ordersService.update(id, status);
+  @SubscribeMessage('updateOrder')
+  async update(@MessageBody() dto: UpdateOrderDto) {
+    const payload = await this.ordersService.update(dto);
     this.server.to('ADV_USERS').emit('updateOrder', payload);
   }
 
   @SubscribeMessage('removeOrder')
   remove(@MessageBody() id: number) {
-    return this.ordersService.remove(id);
+    this.ordersService
+      .remove(id)
+      .then(() => this.server.to('ADV_USERS').emit('removeOrder', id));
   }
 }

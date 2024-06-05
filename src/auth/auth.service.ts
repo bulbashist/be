@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,6 +9,10 @@ import { User } from 'src/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { CookieOptions, Response } from 'express';
 import * as COOKIE from 'src/constants/cookies';
+import { CreateSellerDto } from './dto/create-seller.dto';
+import { UserRoleEnum } from 'src/users/entities/user-role.entity';
+import { createTransport } from 'nodemailer';
+import { UserRights } from 'src/users/entities/rights';
 
 @Injectable()
 export class AuthService {
@@ -23,8 +28,11 @@ export class AuthService {
     secure: true,
   };
 
-  getUserData(token: string) {
+  async getUserData(token: string) {
     const { id, name, rights } = this._jwtService.decode(token) as any;
+    const user = await this._usersService.findOneByID(id);
+    if (user.isBlocked) return null;
+
     return { id, name, rights };
   }
 
@@ -39,6 +47,10 @@ export class AuthService {
       });
     }
 
+    if (user.isBlocked || !user.serviceOnly) {
+      throw new ForbiddenException();
+    }
+
     const accessToken = this.createToken(user);
     return accessToken;
   }
@@ -47,6 +59,10 @@ export class AuthService {
     const user = await this._usersService.findOne(login, password);
     if (!user) {
       throw new UnauthorizedException();
+    }
+
+    if (user.isBlocked || user.serviceOnly) {
+      throw new ForbiddenException();
     }
 
     const accessToken = this.createToken(user);
@@ -61,9 +77,12 @@ export class AuthService {
     }
   }
 
-  async signUpAsSeller(login: string, password: string, name?: string) {
+  async signUpAsSeller(dto: CreateSellerDto) {
     try {
-      await this._usersService.create({ login, password, name: name ?? login });
+      await this._usersService.create({
+        ...dto,
+        role: { id: UserRoleEnum.Seller },
+      });
     } catch {
       throw new BadRequestException('User already exists');
     }
@@ -78,7 +97,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_SECRET,
-        expiresIn: 3600,
+        expiresIn: 3600 * 24,
       },
     );
     return accessToken;
@@ -101,5 +120,32 @@ export class AuthService {
 
   unauthorize(res: Response) {
     res.cookie(COOKIE.ACCESS_TOKEN, '', this.defaultCookieOpts).end();
+  }
+
+  async sendVerificationCode(email: string) {
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'nbulbashist@gmail.com',
+        pass: 'abzm lrmh ctpr rwrt',
+      },
+    });
+
+    const mailOptions = {
+      from: 'nbulbashist@gmail.com',
+      to: email,
+      subject: 'Verification code',
+      text: '123123',
+    };
+
+    return transporter
+      .sendMail(mailOptions)
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  checkVerificationCode(email: string, code: string) {
+    if (code === '123123') return true;
+    return false;
   }
 }

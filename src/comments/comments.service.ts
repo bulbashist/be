@@ -15,7 +15,6 @@ export class CommentsService {
     const saveRes = await this._repo.save(createCommentDto);
     const result = await this._repo.findOne({
       where: { id: saveRes.id },
-      // relations: ['user'],
     });
     return result;
   }

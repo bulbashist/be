@@ -1,4 +1,3 @@
-import { Tag } from 'src/tags/entities/tag.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -33,12 +32,4 @@ export class Review {
   previewImg: string;
 
   avgRating?: number;
-
-  @ManyToMany(() => Tag, { eager: true })
-  @JoinTable({
-    name: 'reviews_has_tags',
-    joinColumn: { name: 'review_id' },
-    inverseJoinColumn: { name: 'tag_id' },
-  })
-  tags: Tag[];
 }

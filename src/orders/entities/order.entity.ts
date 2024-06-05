@@ -59,4 +59,7 @@ export class ProductsToOrders {
     eager: true,
   })
   public product: Product;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  public sum: number;
 }

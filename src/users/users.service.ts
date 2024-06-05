@@ -20,24 +20,30 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this._repo.find();
+    const users = await this._repo.find({
+      select: {
+        id: true,
+        role: {
+          id: true,
+        },
+        login: true,
+        name: true,
+      },
+    });
     return users;
   }
 
   async findOneByID(id: number) {
-    const user = await this._repo
+    return this._repo
       .createQueryBuilder('user')
       .where('user.id = :id', { id })
-      .leftJoinAndSelect('user.cards', 'cards')
+      .select(['user.id', 'user.name'])
       .leftJoinAndSelect('user.orders', 'orders')
       .leftJoinAndSelect('orders.status', 'ostatus')
       .leftJoinAndSelect('orders.office', 'office')
       .leftJoinAndSelect('orders.products', 'pps')
       .leftJoinAndSelect('pps.product', 'product')
-      .leftJoinAndSelect('user.role', 'role')
       .getOne();
-
-    return user;
   }
 
   async findOne(login: string, password?: string) {

@@ -3,7 +3,7 @@ import { Order } from './order.entity';
 
 @Entity()
 export class OrderStatus {
-  @PrimaryColumn()
+  @PrimaryColumn({ generated: 'increment' })
   id: number;
 
   @Column()

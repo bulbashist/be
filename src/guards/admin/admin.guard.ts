@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { AccessToken } from 'src/utility/types';
 import { UserRights } from 'src/users/entities/rights';
+import { AccessToken } from 'src/utility/types';
 
 @Injectable()
-export class PostGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(private _jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,7 +25,7 @@ export class PostGuard implements CanActivate {
     }
 
     const data = this._jwtService.decode(token) as AccessToken;
-    if (data.rights < UserRights.Seller) throw new ForbiddenException();
+    if (data.rights < UserRights.Admin) throw new ForbiddenException();
     return true;
   }
 }

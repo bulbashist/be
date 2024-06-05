@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ProductCategory } from '../../product-categories/entities/product-category.entity';
 import { ProductPhoto } from './product-photo.entity';
@@ -55,6 +56,21 @@ export class Product {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
+
+  @Column()
+  material: string;
+
+  @Column()
+  outOfStock: boolean;
+
+  @Column({ nullable: true })
+  priority: number;
+
+  @Column({ nullable: true })
+  discount: number;
+
+  @UpdateDateColumn()
+  date: Date;
 
   @OneToMany(() => ProductsToOrders, (pto) => pto.product, {
     // eager: true,

@@ -1,4 +1,3 @@
-import { Tag } from 'src/tags/entities/tag.entity';
 import { Review } from '../entities/review.entity';
 
 export class Preview {
@@ -7,7 +6,7 @@ export class Preview {
   date: Date;
   compositionName: string;
   avgRating: number;
-  tags: Tag[];
+
   previewImg: string;
 
   constructor(review: Review) {

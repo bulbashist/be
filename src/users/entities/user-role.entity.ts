@@ -16,3 +16,10 @@ export class UserRole {
   @OneToMany(() => User, (u) => u.role)
   users: User[];
 }
+
+export enum UserRoleEnum {
+  User = 1,
+  Seller = 2,
+  Admin = 3,
+  Blocked = 4,
+}

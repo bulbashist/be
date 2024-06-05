@@ -9,14 +9,17 @@ import {
   Query,
   ParseIntPipe,
   UseGuards,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Jwt } from 'src/jwt/jwt.decorator';
 import { AccessToken } from 'src/utility/types';
-import { UserRights } from 'src/users/entities/rights';
 import { PostGuard } from './guards/post.guard';
+import { DeleteGuard } from './guards/delete.guard';
+import { ParseOptIntPipe } from 'src/pipes/optint/optint.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -28,43 +31,55 @@ export class ProductsController {
     @Body() createProductDto: CreateProductDto,
     @Jwt() token: AccessToken,
   ) {
-    if (token.rights >= UserRights.Seller) {
-      return await this.productsService.create(createProductDto, token.id);
-    }
+    return this.productsService.create(createProductDto, token.id).catch(() => {
+      throw new BadRequestException();
+    });
   }
 
   @Get()
   async findAll(
-    @Query('seller') sellerId: string,
+    @Query('seller', ParseOptIntPipe) sellerId: number,
     @Query('category') categoryName: string,
-    @Query('page', ParseIntPipe) page: number,
+    @Query('page', ParseOptIntPipe) page: number,
+    @Query('sort', ParseOptIntPipe) sort: number,
   ) {
     if (sellerId) {
-      return this.productsService.findBySeller(+sellerId, page);
+      return this.productsService.findBySeller(+sellerId, page, sort);
     } else if (categoryName) {
-      return this.productsService.findByCategory(categoryName, page);
+      return this.productsService.findByCategory(categoryName, page, sort);
     } else {
-      return await this.productsService.findAll(page);
+      return this.productsService.findAll(page, sort);
     }
   }
 
   @Get('/search')
-  async search(@Query('text') text: string) {
-    return await this.productsService.findByText(text);
+  async search(
+    @Query('text') text: string,
+    @Query('page', ParseOptIntPipe) page: number,
+  ) {
+    return await this.productsService.findByText(text, page);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(id).catch(() => {
+      throw new NotFoundException();
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
+    return this.productsService.update(id, updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  @UseGuards(DeleteGuard)
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.remove(id).catch(() => {
+      throw new BadRequestException('This product is a part of current orders');
+    });
   }
 }

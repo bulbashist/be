@@ -1,5 +1,4 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
-import { PayCard } from '../../paycards/entities/paycard.entity';
 import { UserRole } from 'src/users/entities/user-role.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
@@ -17,13 +16,16 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
   serviceOnly: boolean;
 
   @Column({ nullable: true })
   name: string;
 
-  @OneToMany(() => PayCard, (pc) => pc.user)
-  cards: PayCard[];
+  @Column({ nullable: true })
+  isBlocked: boolean;
 
   @OneToMany(() => Order, (o) => o.user)
   orders: Order[];
