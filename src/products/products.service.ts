@@ -22,7 +22,7 @@ export class ProductsService {
       ...createProductDto,
       seller: { id: userId },
     };
-    return await this._repo.save(product);
+    return this._repo.save(product);
   }
 
   async findAll(page: number, sort = 0, amount = 12) {

@@ -27,24 +27,26 @@ export class Product {
   @Index({ fulltext: true })
   description: string;
 
-  @Column()
+  @Column({ nullable: true })
   width: number;
 
-  @Column()
+  @Column({ nullable: true })
   breadth: number;
 
-  @Column()
+  @Column({ nullable: true })
   height: number;
 
   @ManyToOne(() => ProductCategory, (pc) => pc.id, {
     eager: true,
     onDelete: 'RESTRICT',
+    nullable: false,
   })
   category: ProductCategory;
 
   @ManyToOne(() => ProductManufacturer, (pm) => pm.id, {
     eager: true,
     onDelete: 'RESTRICT',
+    nullable: false,
   })
   manufacturer: ProductManufacturer;
 
@@ -57,10 +59,10 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @Column()
+  @Column({ nullable: true })
   material: string;
 
-  @Column()
+  @Column({ nullable: true })
   outOfStock: boolean;
 
   @Column({ nullable: true })

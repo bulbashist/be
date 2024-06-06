@@ -31,9 +31,11 @@ export class ProductsController {
     @Body() createProductDto: CreateProductDto,
     @Jwt() token: AccessToken,
   ) {
-    return this.productsService.create(createProductDto, token.id).catch(() => {
-      throw new BadRequestException();
-    });
+    return this.productsService
+      .create(createProductDto, token.id)
+      .catch((err) => {
+        throw new BadRequestException(err);
+      });
   }
 
   @Get()
