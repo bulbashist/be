@@ -14,7 +14,11 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway({
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: [
+      'http://localhost:3000',
+      'https://fe-8big.onrender.com',
+      process.env.CLIENT_APP,
+    ],
   },
 })
 export class OrdersGateway implements OnGatewayConnection {

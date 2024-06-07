@@ -43,7 +43,6 @@ import { StatsModule } from './stats/stats.module';
       keepConnectionAlive: true,
       entities: [
         User,
-        // Review,
         // Message,
         Office,
         OrderStatus,
