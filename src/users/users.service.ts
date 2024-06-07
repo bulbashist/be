@@ -26,6 +26,7 @@ export class UsersService {
         role: {
           id: true,
         },
+        isBlocked: true,
         login: true,
         name: true,
       },
