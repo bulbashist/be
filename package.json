@@ -43,10 +43,10 @@
     "rxjs": "^7.2.0",
     "socket.io": "^4.7.2",
     "stripe": "^15.10.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "@nestjs/cli": "^9.5.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.5.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
     "@types/cookie-parser": "^1.4.4",
