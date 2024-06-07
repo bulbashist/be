@@ -14,7 +14,7 @@ import { DeleteGuard } from './guards/delete.guard';
 @WebSocketGateway({
   cors: {
     credentials: true,
-    origin: [process.env.CLIENT_APP, 'http://localhost:3000'],
+    origin: ['http://localhost:3000'],
   },
 })
 export class CommentsGateway {
