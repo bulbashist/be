@@ -11,8 +11,16 @@ export class CommentsService {
     private _repo: Repository<Comment>,
   ) {}
 
-  async create(createCommentDto: CreateCommentDto) {
-    const saveRes = await this._repo.save(createCommentDto);
+  async create(dto: CreateCommentDto) {
+    const isExists = await this._repo.exist({
+      where: { user: { id: dto.user.id }, product: { id: dto.product.id } },
+    });
+
+    if (isExists) {
+      return Promise.reject('Already exists');
+    }
+
+    const saveRes = await this._repo.save(dto);
     const result = await this._repo.findOne({
       where: { id: saveRes.id },
     });
@@ -20,7 +28,6 @@ export class CommentsService {
   }
 
   async remove(id: number) {
-    const result = await this._repo.delete(id);
-    return result;
+    return this._repo.delete(id);
   }
 }

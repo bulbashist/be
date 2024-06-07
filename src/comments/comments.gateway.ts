@@ -14,7 +14,7 @@ import { DeleteGuard } from './guards/delete.guard';
 @WebSocketGateway({
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000', 'https://application-ld69.onrender.com'],
+    origin: [process.env.CLIENT_APP, 'http://localhost:3000'],
   },
 })
 export class CommentsGateway {
@@ -37,20 +37,18 @@ export class CommentsGateway {
 
   @SubscribeMessage('createComment')
   async create(@MessageBody() createCommentDto: CreateCommentDto) {
-    /*
-      check access-token to get user id
-      add to dto
-      or client should send it?
-    */
-
-    const result = await this.commentsService.create(createCommentDto);
-    this._server.emit('createComment', new GetCommentDto(result));
+    this.commentsService
+      .create(createCommentDto)
+      .then((res) => this._server.emit('createComment', new GetCommentDto(res)))
+      .catch(console.log);
   }
 
   @SubscribeMessage('removeComment')
   @UseGuards(DeleteGuard)
   async remove(@MessageBody() id: number) {
-    await this.commentsService.remove(id);
-    this._server.emit('removeComment', id);
+    this.commentsService
+      .remove(id)
+      .then(() => this._server.emit('removeComment', id))
+      .catch(console.log);
   }
 }

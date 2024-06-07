@@ -14,10 +14,12 @@ export class GetCommentDto {
       id: comment.user.id,
       name: comment.user.name,
     };
+    this.rating = comment.rating;
   }
 
   id: number;
   text: string;
   date: Date;
+  rating: number;
   user: Author;
 }

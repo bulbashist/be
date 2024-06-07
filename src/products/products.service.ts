@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { sortVariants } from './types';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Injectable()
 export class ProductsService {
@@ -139,16 +140,20 @@ export class ProductsService {
   transformProduct(product: Product, withComments = false) {
     const updProduct = {
       ...product,
-      avgRating:
-        product.comments.length > 0
-          ? product.comments.reduce((sum, curr) => sum + curr.rating, 0) /
-            product.comments.length
-          : undefined,
+      avgRating: this.getAverage(product.comments),
       totalComms: product.comments.length,
     };
     if (!withComments) {
       delete updProduct.comments;
     }
     return updProduct;
+  }
+
+  getAverage(arr: Comment[]) {
+    if (arr.length === 0) return 0;
+
+    return +(
+      arr.reduce((sum, curr) => sum + curr.rating, 0) / arr.length
+    ).toFixed(2);
   }
 }

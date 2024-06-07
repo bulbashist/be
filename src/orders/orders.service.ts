@@ -34,8 +34,7 @@ export class OrdersService {
       ),
     };
 
-    const res = await this._repo.save(data);
-    return res;
+    return this._repo.save(data);
   }
 
   async findAll(page: number, amount = 6) {
@@ -46,7 +45,6 @@ export class OrdersService {
       .leftJoinAndSelect('order.status', 'status')
       .leftJoinAndSelect('pops.product', 'product')
       .orderBy('order.date', 'ASC');
-    console.log(page);
 
     if (page) {
       ptQuery.take(amount).skip((page - 1) * amount);
@@ -70,11 +68,11 @@ export class OrdersService {
   }
 
   async update(updateOrderDto: UpdateOrderDto) {
-    return await this._repo.save(updateOrderDto);
+    return this._repo.save(updateOrderDto);
   }
 
   async remove(id: number) {
     const order = await this.findOne(id);
-    return await this._repo.remove(order);
+    return this._repo.remove(order);
   }
 }
