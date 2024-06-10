@@ -80,7 +80,10 @@ export class Product {
   })
   public productsToOrders: ProductsToOrders[];
 
-  @OneToMany(() => ProductPhoto, (pp) => pp.product, { eager: true })
+  @OneToMany(() => ProductPhoto, (pp) => pp.product, {
+    eager: true,
+    cascade: true,
+  })
   photos: ProductPhoto[];
 
   @OneToMany(() => Comment, (c) => c.product, { eager: true })
