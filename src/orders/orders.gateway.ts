@@ -10,6 +10,7 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Server, Socket } from 'socket.io';
+import { createTransport } from 'nodemailer';
 
 @WebSocketGateway({
   cors: {
@@ -42,6 +43,30 @@ export class OrdersGateway implements OnGatewayConnection {
 
   @SubscribeMessage('createOrder')
   create(@MessageBody() createOrderDto: CreateOrderDto) {
+    const transporter = createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'nbulbashist@gmail.com',
+        pass: 'abzm lrmh ctpr rwrt',
+      },
+    });
+
+    const mailOptions = {
+      from: 'nbulbashist@gmail.com',
+      to: '',
+      subject: 'New order',
+      text: '',
+    };
+
+    createOrderDto.products.forEach((p) => {
+      mailOptions.to = p.product.seller.login;
+      mailOptions.text = `
+      Product #${p.product.id} (${p.product.name}) was ordered.
+      Amount: ${p.count}. 
+      `;
+      transporter.sendMail(mailOptions).catch(console.log);
+    });
+
     this.ordersService
       .create(createOrderDto)
       .then((res) => this.server.to('ADV_USERS').emit('createOrder', res));

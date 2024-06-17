@@ -64,7 +64,10 @@ export class OrdersService {
   }
 
   async findOne(id: number) {
-    return this._repo.findOne({ where: { id } });
+    return this._repo.findOne({
+      where: { id },
+      relations: { office: true, status: true },
+    });
   }
 
   async update(updateOrderDto: UpdateOrderDto) {

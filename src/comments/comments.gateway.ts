@@ -3,10 +3,11 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { GetCommentDto } from './dto/get-comment.dto';
 import { UseGuards } from '@nestjs/common/decorators';
 import { DeleteGuard } from './guards/delete.guard';
@@ -40,11 +41,19 @@ export class CommentsGateway {
   }
 
   @SubscribeMessage('createComment')
-  async create(@MessageBody() createCommentDto: CreateCommentDto) {
+  async create(
+    @MessageBody() dto: CreateCommentDto,
+    @ConnectedSocket() socket: Socket,
+  ) {
     this.commentsService
-      .create(createCommentDto)
+      .create(dto)
       .then((res) => this._server.emit('createComment', new GetCommentDto(res)))
-      .catch(console.log);
+      .catch(() =>
+        socket.emit('createComment', {
+          err: true,
+          msg: 'err_duplicate_comment',
+        }),
+      );
   }
 
   @SubscribeMessage('removeComment')
